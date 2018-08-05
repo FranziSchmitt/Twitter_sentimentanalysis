@@ -124,9 +124,8 @@ def main():
 
         ''' other variables '''
         name = search_phrase.split()[0]
-        json_file_root = 'Data/' + name + '/'
+        json_file_root = '../Data2/' + name + '/'
         
-        os.chdir('..')
         os.makedirs(os.path.dirname(json_file_root), exist_ok=True)
         read_IDs = False
         
