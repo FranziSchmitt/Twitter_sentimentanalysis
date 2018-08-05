@@ -19,12 +19,17 @@ def load_api():
     ''' Function that loads the twitter API after authorizing the user. '''
     
     tokens_dict = {}
-    
-    with open('../Twitter_authentication/Authentication.txt', 'r') as secrets:
+
+    dir_base = os.path.dirname(os.path.realpath(__file__))
+    dir_auth = os.path.join(dir_base, '../Twitter_authentication')
+    file_auth = os.path.join(dir_auth, 'Authentication.txt')
+
+    with open(file_auth, 'r') as secrets:
         for line in secrets:
             (key, value) = line.split()
             tokens_dict[key] = value
         
+
     auth = OAuthHandler(tokens_dict.get('consumer_key'), tokens_dict.get('consumer_secret'))
     auth.set_access_token(tokens_dict.get('access_token'), tokens_dict.get('access_secret'))
     
@@ -99,12 +104,13 @@ def main():
 
 
     ''' search variables: '''
-    search_phrases = ['CSU', 'CDU', 
-                     'SPD', 'Ltw_BY',
-                     'AfD', 'ltw18',
-                     'LTWBY', 'LTWBY18',
-                     'spdde', 'Gruene',
-                     'LINKE', 'FDP']
+#    search_phrases = ['CSU', 'CDU', 
+#                     'SPD', 'Ltw_BY',
+#                     'AfD', 'ltw18',
+#                     'LTWBY', 'LTWBY18',
+#                     'spdde', 'Gruene',
+#                     'LINKE', 'FDP']
+    search_phrases = ['AFD']
 
     time_limit = 1.5                           # runtime limit in hours
     max_tweets = 10                           # number of tweets per search (will be
@@ -124,9 +130,11 @@ def main():
 
         ''' other variables '''
         name = search_phrase.split()[0]
-        json_file_root = '../Data2/' + name + '/'
+        dir_base = os.path.dirname(os.path.realpath(__file__))
+        dir_save = os.path.join(dir_base, '../Data')
+        json_file_root = os.path.join(dir_save,  name)
         
-        os.makedirs(os.path.dirname(json_file_root), exist_ok=True)
+        os.makedirs(json_file_root, exist_ok=True)
         read_IDs = False
         
         # open a file in which to store the tweets
