@@ -104,13 +104,12 @@ def main():
 
 
     ''' search variables: '''
-#    search_phrases = ['CSU', 'CDU', 
-#                     'SPD', 'Ltw_BY',
-#                     'AfD', 'ltw18',
-#                     'LTWBY', 'LTWBY18',
-#                     'spdde', 'Gruene',
-#                     'LINKE', 'FDP']
-    search_phrases = ['AFD']
+    search_phrases = ['CSU', 'CDU', 
+                     'SPD', 'Ltw_BY',
+                     'AfD', 'ltw18',
+                     'LTWBY', 'LTWBY18',
+                     'spdde', 'Gruene',
+                     'LINKE', 'FDP']
 
     time_limit = 1.5                           # runtime limit in hours
     max_tweets = 10                           # number of tweets per search (will be
