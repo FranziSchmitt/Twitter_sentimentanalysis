@@ -99,17 +99,17 @@ def main():
 
 
     ''' search variables: '''
-#    search_phrases = ['CSU', 'CDU', 
-#                     'SPD', 'Ltw_BY',
-#                     'AfD', 'ltw18',
-#                     'LTWBY', 'LTWBY18',
-#                     'spdde', 'Gruene',
-#                     'LINKE', 'FPD']
-    search_phrases = ['FDP']
+    search_phrases = ['CSU', 'CDU', 
+                     'SPD', 'Ltw_BY',
+                     'AfD', 'ltw18',
+                     'LTWBY', 'LTWBY18',
+                     'spdde', 'Gruene',
+                     'LINKE', 'FDP']
+
     time_limit = 1.5                           # runtime limit in hours
     max_tweets = 10                           # number of tweets per search (will be
                                                # iterated over) - maximum is 100
-    min_days_old, max_days_old = 8, 9         # search limits e.g., from 7 to 8
+    min_days_old, max_days_old = 1, 2         # search limits e.g., from 7 to 8
                                                # gives current weekday from last week,                                               # min_days_old=0 will search from right now
     #USA = '39.8,-95.583068847656,2500km'  
     Germany = '51.163375, 10.447683, 500km'     # Germany includes all of Germany plus 
@@ -124,7 +124,9 @@ def main():
 
         ''' other variables '''
         name = search_phrase.split()[0]
-        json_file_root = name + '/'  + name
+        json_file_root = 'Data/' + name + '/'
+        
+        os.chdir('..')
         os.makedirs(os.path.dirname(json_file_root), exist_ok=True)
         read_IDs = False
         
@@ -137,7 +139,8 @@ def main():
             d2 = dt.datetime.now() - dt.timedelta(days=min_days_old)
             day = '{0}-{1:0>2}-{2:0>2}_to_{3}-{4:0>2}-{5:0>2}'.format(
                   d1.year, d1.month, d1.day, d2.year, d2.month, d2.day)
-        json_file = json_file_root + '_' + day + '.json'
+        file_name = name + '_' + day + '.json'
+        json_file = os.path.join(json_file_root, file_name)
         if os.path.isfile(json_file):
             print('Appending tweets to file named: ',json_file)
             read_IDs = True
