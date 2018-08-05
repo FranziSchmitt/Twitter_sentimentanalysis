@@ -2,3 +2,5 @@
 
 Data/*
 Twitter_authentication/*
+twitterenv/
+*.swp
