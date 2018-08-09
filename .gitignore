@@ -1,6 +1,7 @@
 !Data
 
 Data/*
+Data_old/*
 Twitter_authentication/*
 twitterenv/
 *.swp

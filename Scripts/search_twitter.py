@@ -48,7 +48,8 @@ def tweet_search(api, query, max_tweets, max_id, since_id, geocode):
         try:
             new_tweets = api.search(q=query, count=remaining_tweets,
                                     since_id=str(since_id),
-				                    max_id=str(max_id-1))
+				                    max_id=str(max_id-1),
+                                   tweet_mode='extended')
 #                                    geocode=geocode)
             print('found',len(new_tweets),'tweets {}'.format(query))
             if not new_tweets:
@@ -109,7 +110,8 @@ def main():
                      'AfD', 'ltw18',
                      'LTWBY', 'LTWBY18',
                      'spdde', 'Gruene',
-                     'LINKE', 'FDP']
+                     'LINKE', 'FDP',
+                     'Grüne']
 
     time_limit = 1.5                           # runtime limit in hours
     max_tweets = 10                           # number of tweets per search (will be
