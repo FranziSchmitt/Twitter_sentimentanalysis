@@ -116,7 +116,7 @@ def main():
     time_limit = 1.5                           # runtime limit in hours
     max_tweets = 10                           # number of tweets per search (will be
                                                # iterated over) - maximum is 100
-    min_days_old, max_days_old = 1, 2         # search limits e.g., from 7 to 8
+    min_days_old, max_days_old = 1, 9         # search limits e.g., from 7 to 8
                                                # gives current weekday from last week,                                               # min_days_old=0 will search from right now
     #USA = '39.8,-95.583068847656,2500km'  
     Germany = '51.163375, 10.447683, 500km'     # Germany includes all of Germany plus 
