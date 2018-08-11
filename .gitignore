@@ -5,3 +5,4 @@ Data_old/*
 Twitter_authentication/*
 twitterenv/
 *.swp
+*.ipynb_*
