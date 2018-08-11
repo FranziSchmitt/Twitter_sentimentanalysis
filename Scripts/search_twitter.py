@@ -6,8 +6,8 @@ Created on Wed Jun 27 11:35:12 2018
 @author: franzi
 """
 
-import tweepy
-from tweepy import OAuthHandler
+#import tweepy
+from tweepy import OAuthHandler, TweepError, API
 import json
 import datetime as dt
 import time
@@ -34,35 +34,38 @@ def load_api():
     auth.set_access_token(tokens_dict.get('access_token'), tokens_dict.get('access_secret'))
     
     # load the twitter API via tweepy
-    return tweepy.API(auth)
+    return API(auth)
 
     
-def tweet_search(api, query, max_tweets, max_id, since_id, geocode):
+def tweet_search(api, query, max_tweets, max_id, since_id):
     ''' Function that takes in a search string 'query', the maximum
         number of tweets 'max_tweets', and the minimum (i.e., starting)
         tweet id. It returns a list of tweepy.models.Status objects. '''
 
     searched_tweets = []
+    counter = 0
     while len(searched_tweets) < max_tweets:
         remaining_tweets = max_tweets - len(searched_tweets)
+        counter += 1
         try:
             new_tweets = api.search(q=query, count=remaining_tweets,
                                     since_id=str(since_id),
 				                    max_id=str(max_id-1),
                                    tweet_mode='extended')
 #                                    geocode=geocode)
+            
             print('found',len(new_tweets),'tweets {}'.format(query))
             if not new_tweets:
                 print('no tweets found')
                 break
             searched_tweets.extend(new_tweets)
             max_id = new_tweets[-1].id
-        except tweepy.TweepError:
+        except TweepError:
             print('exception raised, waiting 15 minutes')
             print('(until:', dt.datetime.now()+dt.timedelta(minutes=15), ')')
             time.sleep(15*60)
             break # stop the loop
-    return searched_tweets, max_id
+    return searched_tweets, max_id, counter
 
 
 def get_tweet_id(api, date='', days_ago=9, query='a'):
@@ -102,24 +105,27 @@ def main():
         that were created over a given number of days. The search
         dates and search phrase can be changed below. '''
 
-
-
     ''' search variables: '''
     search_phrases = ['CSU', 'CDU', 
                      'SPD', 'Ltw_BY',
                      'AfD', 'ltw18',
                      'LTWBY', 'LTWBY18',
-                     'spdde', 'Gruene',
-                     'LINKE', 'FDP',
-                     'Grüne']
-
-    time_limit = 1.5                           # runtime limit in hours
-    max_tweets = 10                           # number of tweets per search (will be
+                     'Gruene','LINKE', 
+                     'FDP', 'Grüne',
+                     'bayern', 'baden-wuerttenberg',
+                     'hessen', 'nrw', 'nordrhein-westfalen',
+                     'sachsen', 'sachsen-anhalt',
+                     'niedersachsen', 'mecklemburg-vorpommern',
+                     'thueringen', 'brandenburg', 'berlin', 'hamburg', 
+                     'bremen', 'rheinland-pfalz', 'saarland']
+    
+    time_limit = 5                           # runtime limit in hours
+    max_tweets = 100                           # number of tweets per search (will be
                                                # iterated over) - maximum is 100
-    min_days_old, max_days_old = 1, 2         # search limits e.g., from 7 to 8
+    min_days_old, max_days_old = 1, 9         # search limits e.g., from 7 to 8
                                                # gives current weekday from last week,                                               # min_days_old=0 will search from right now
     #USA = '39.8,-95.583068847656,2500km'  
-    Germany = '51.163375, 10.447683, 500km'     # Germany includes all of Germany plus 
+    #Germany = '51.163375, 10.447683, 500km'     # Germany includes all of Germany plus 
     #Bavaria = '48.7775, 11.431111, 200km'       # Bavaria includes all Bavaria plus
     
 
@@ -139,6 +145,7 @@ def main():
         read_IDs = False
         
         # open a file in which to store the tweets
+        # if scraped time span is exactly one day
         if max_days_old - min_days_old == 1:
             d = dt.datetime.now() - dt.timedelta(days=min_days_old)
             day = '{0}-{1:0>2}-{2:0>2}'.format(d.year, d.month, d.day)
@@ -149,8 +156,10 @@ def main():
                   d1.year, d1.month, d1.day, d2.year, d2.month, d2.day)
         file_name = name + '_' + day + '.json'
         json_file = os.path.join(json_file_root, file_name)
+        # check if file for search term already exists
         if os.path.isfile(json_file):
             print('Appending tweets to file named: ',json_file)
+            # flag for continue
             read_IDs = True
         
         # authorize and load the twitter API
@@ -173,20 +182,18 @@ def main():
         since_id = get_tweet_id(api, days_ago=(max_days_old-1))
         print('max id (starting point) =', max_id)
         print('since id (ending point) =', since_id)
-        
-
 
         ''' tweet gathering loop  '''
         start = dt.datetime.now()
         end = start + dt.timedelta(hours=time_limit)
         count, exitcount = 0, 0
         while dt.datetime.now() < end:
-            count += 1
-            print('count =',count)
             # collect tweets and update max_id
-            tweets, max_id = tweet_search(api, search_phrase, max_tweets,
-                                          max_id=max_id, since_id=since_id,
-                                          geocode=Germany)
+            tweets, max_id, internal_counter = tweet_search(api, search_phrase, max_tweets,
+                                                            max_id=max_id, since_id=since_id
+                                                            )
+            count += internal_counter
+            print('count =',count)
             # write tweets to file in JSON format
             if tweets:
                 write_tweets(tweets, json_file)
@@ -199,6 +206,8 @@ def main():
                     else:
                         print('Maximum number of empty tweet strings reached - breaking')
                         break
+        if dt.datetime.now() < end:
+            print('I ran out of time, please check: time_limit')
 
 
 if __name__ == "__main__":
