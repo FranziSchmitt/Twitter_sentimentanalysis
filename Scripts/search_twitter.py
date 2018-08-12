@@ -37,7 +37,7 @@ def load_api():
     return API(auth)
 
     
-def tweet_search(api, query, max_tweets, max_id, since_id):
+def tweet_search(api, query, max_tweets, max_id, since_id, lang='de'):
     ''' Function that takes in a search string 'query', the maximum
         number of tweets 'max_tweets', and the minimum (i.e., starting)
         tweet id. It returns a list of tweepy.models.Status objects. '''
@@ -51,7 +51,7 @@ def tweet_search(api, query, max_tweets, max_id, since_id):
             new_tweets = api.search(q=query, count=remaining_tweets,
                                     since_id=str(since_id),
 				                    max_id=str(max_id-1),
-                                   tweet_mode='extended')
+                                   tweet_mode='extended', lang=lang)
 #                                    geocode=geocode)
             
             print('found',len(new_tweets),'tweets {}'.format(query))
@@ -207,14 +207,11 @@ def main():
                 else:
                     exitcount += 1
                     if exitcount == 3:
-                        if search_phrase == search_phrases[-1]:
-                            sys.exit('Maximum number of empty tweet strings reached - exiting')
-                        else:
-                            print('Maximum number of empty tweet strings reached - breaking')
-                            break
-            if dt.datetime.now() < end:
-                print('I ran out of time, please check: time_limit')
-
-
+                        #if search_phrase == search_phrases[-1]:
+                            #sys.exit('Maximum number of empty tweet strings reached - exiting')
+                        #else:
+                        print('Maximum number of empty tweet strings reached - breaking')
+                        break
+            
 if __name__ == "__main__":
     main()
