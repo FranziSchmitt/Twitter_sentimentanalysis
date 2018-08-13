@@ -8,6 +8,7 @@ Created on Wed Jun 27 11:35:12 2018
 
 #import tweepy
 from tweepy import OAuthHandler, TweepError, API
+from tweepy.error import RateLimitError
 import json
 import datetime as dt
 import time
@@ -85,8 +86,14 @@ def get_tweet_id(api, date='', days_ago=9, query='a'):
         td = dt.datetime.now() - dt.timedelta(days=days_ago)
         tweet_date = '{0}-{1:0>2}-{2:0>2}'.format(td.year, td.month, td.day)
         # get list of up to 10 tweets
-        tweet = api.search(q=query, count=10, until=tweet_date)
+        try:
+            tweet = api.search(q=query, count=10, until=tweet_date)
+        except RateLimitError:
+            print('Rate Limit Error raised')
+            time.sleep(15*60)
+            tweet = api.search(q=query, count=10, until=tweet_date)
         print('search limit (start/stop):',tweet[0].created_at)
+        
         # return the id of the first tweet in the list
         return tweet[0].id
 
@@ -132,7 +139,7 @@ def main():
 
     # loop over search items,
     # creating a new file for each
-    last_day = 10
+    last_day = 2
     
     for max_days_old in range(last_day, 1, -1):
         min_days_old = max_days_old - 1 
