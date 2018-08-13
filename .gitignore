@@ -4,6 +4,6 @@ Data/*
 Data_old/*
 Twitter_authentication/*
 twitterenv/
-Scripts/__pychache__/
+Scripts/__pycache__/
 *.swp
 *.ipynb_*
