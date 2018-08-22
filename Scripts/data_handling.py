@@ -14,10 +14,10 @@ def read_data(file = 'json_file_location.json'):
     """
     
     data_frame = pd.read_json(file, 
-                               orient='records', 
-                               lines=True, 
-                               convert_dates=True, 
-                               keep_default_dates=True)
+                              orient='records', 
+                              lines=True, 
+                              convert_dates=True, 
+                              keep_default_dates=True)
     return data_frame
 
 
