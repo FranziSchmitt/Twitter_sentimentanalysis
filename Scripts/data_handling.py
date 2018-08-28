@@ -30,7 +30,7 @@ def cleaning(df):
     """
     
     
-    ger_df = df.loc[:, ['created_at', 'id_str', 'full_text']][df.lang == 'de']
+    ger_df = df.loc[:, ['created_at', 'full_text', 'user']][df.lang == 'de']
     ger_df = ger_df.set_index(pd.DatetimeIndex(ger_df['created_at'], inplace=True)).sort_values('created_at', ascending=True)
     
     clean_ger_df = ger_df.drop_duplicates('full_text')
@@ -68,14 +68,44 @@ def collapse_dfs(df_dict):
     1. takes a dictionary of dataframes, iterates over them and creates a single dataframe, containing all data
     2. deduplicates the dataframe
     """
+
     parties = ['AfD', 'SPD', 'CDU', 'CSU', 'FDP', 'LINKE', 'Gruene', 'Grüne']
     all_data = pd.DataFrame()
 
     for party in parties:
         df = df_dict[party]
         all_data = all_data.append(df)
-
-    all_data = all_data.drop_duplicates().drop("created_at", axis=1)
-    
+  
     
     return all_data
+
+def load_large(file_list):
+    """
+    Function that loads more than just a minimal dataframe used for clustering or classification.
+    Variation of the load_data function.
+    """
+
+    df = pd.DataFrame()
+    
+    for file in tqdm(file_list):
+        if os.path.isfile(file):
+            sub_df = selecting(read_data(file))
+        else:
+            print('File {} not found'.format(file))
+            continue
+        if df.empty:
+            df = sub_df
+        else:
+            df = df.append(sub_df)
+            
+    return df
+
+def selecting(df):
+    large_df = df.loc[:, :][df.lang == 'de']
+    large_df = large_df.set_index(pd.DatetimeIndex(large_df['created_at'], inplace=True)).sort_values('created_at', ascending=True)
+    
+    clean_large_df = large_df.drop_duplicates('full_text')
+
+    assert len(clean_large_df) == (len(large_df) - large_df.duplicated('full_text').sum())
+    
+    return large_df
