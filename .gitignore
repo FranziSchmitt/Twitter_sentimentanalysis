@@ -7,3 +7,4 @@ twitterenv/
 Scripts/__pycache__/
 *.swp
 *.ipynb_*
+Models/embed_tweets_de_200M_200D/
