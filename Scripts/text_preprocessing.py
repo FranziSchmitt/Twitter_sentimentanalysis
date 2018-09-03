@@ -20,7 +20,7 @@ def df_processing(df):
                                        apply(at_remover).\
                                        apply(text_cleaner).\
                                        map(rt_remover).\
-                                       apply(replace_german_umlaut)
+                                       apply(replace_german_umlaut).apply(number_remover)
     df['parties'] = df['full_text'].map(party_finder)
     df['stemmed'] = df['clean_text'].apply(stemmi)
 
@@ -35,6 +35,9 @@ Functions that cleans the text:
 
 # removes special characters from text - # and @ to be removed together with the subsequent word in separate function
 text_cleaner = lambda x: " ".join(re.findall(r"[A-Za-z0-9üäöÜÄÖß@]*", x))
+
+# remove numbers from text
+number_remover = lambda x: re.sub(r'(\d)+', '', x)
 
 # extracts hashtags+subsequent word from full_text
 tag_finder = lambda x: re.findall(r"#(\w+)", x)
