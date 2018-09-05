@@ -45,18 +45,4 @@ def party_substituter(x):
     Since the spacy tagger does not recognize party acronyms as nouns, 
     parties are replaced by substitutes to make them available to the model.
     """
-    party_dict = {'afd': 'Pfannen', 
-                  'spd': 'Teller', 
-                  'cdu': 'Messer', 
-                  'csu': 'Gabel', 
-                  'fdp': 'Freidemokraten'}
-    
-    new_text = ''
-    text = x.lower()
-    
-    for acro, new in party_dict.items():
-        if acro.lower() in text:
-            new_text = text.replace(acro.lower(), new.lower())
-        else:
-            new_text = text
-    return new_text
+    return x.lower().replace('spd', 'sozialdemokraten').replace('cdu', 'christdemokraten').replace('csu', 'christsoziale').replace('fdp', 'freidemokraten').replace('afd', 'pfannen')
