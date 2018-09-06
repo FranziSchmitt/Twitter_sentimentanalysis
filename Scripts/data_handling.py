@@ -31,7 +31,7 @@ def cleaning(df):
     
     
     ger_df = df.loc[:, ['created_at', 'full_text', 'user']][df.lang == 'de']
-    ger_df = ger_df.set_index(pd.DatetimeIndex(ger_df['created_at'], inplace=True)).sort_values('created_at', ascending=True)
+    ger_df = ger_df.set_index(pd.DatetimeIndex(ger_df['created_at']), drop=True).sort_values('created_at', ascending=True)
     
     clean_ger_df = ger_df.drop_duplicates('full_text')
 
