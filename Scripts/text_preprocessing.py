@@ -12,17 +12,28 @@ from  nltk.stem.snowball import SnowballStemmer
 def df_processing(df):
     """
     Main function to remove special characters and extract hashtags, parties, mentions from a dataframe
+    Takes dataframe that has been imported using data handling script. 
+    -----
+    Necessary column: 'full_text'
+    -----
+    Creates new columns: 
+    clean_text: based on full text, does not contain mentions, retweets, umlauts and hyperlinks are replaced.
+    tags: hashtags from full text
+    mentions: mentions (@) from full text
+    parties: all parties mentioned in full text
+    stemmed: based on clean text, uses the nltk snowball stemmer to stem words
     """
     
-    df['tags'] = df['full_text'].apply(tag_finder)
-    df['mentions'] = df['full_text'].apply(at_finder)
+    df['tags'] = df['full_text'].map(tag_finder)
+    df['mentions'] = df['full_text'].map(at_finder)
     df['clean_text'] = df['full_text'].map(link_finder).\
-                                       apply(at_remover).\
-                                       apply(text_cleaner).\
+                                       map(at_remover).\
+                                       map(text_cleaner).\
                                        map(rt_remover).\
-                                       apply(replace_german_umlaut).apply(number_remover)
+                                       map(replace_german_umlaut).\
+                                       map(number_remover)
     df['parties'] = df['full_text'].map(party_finder)
-    df['stemmed'] = df['clean_text'].apply(stemmi)
+    df['stemmed'] = df['clean_text'].map(stemmi)
 
 
 
