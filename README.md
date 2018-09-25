@@ -1,4 +1,4 @@
-# Twitter_sentimentanalysis
+# Twitter sentimentanalysis
 This is the portforlio project, I worked on while I participated in Data Science Retreat in Berlin. 
 
 I set up a Raspberry Pi and scraped for Tweets that mention at least one of the German parties. 
